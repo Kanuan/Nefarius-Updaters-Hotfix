@@ -9,6 +9,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Authors>Benjamin Höglinger-Stelzer</Authors>
 		<PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
   <ItemGroup>

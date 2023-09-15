@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Legacinator;
 using Serilog;
 using Microsoft.Win32;
 using IniParser;
 using IniParser.Model;
-using System.Diagnostics;
-using System.Linq;
 using Microsoft.Win32.TaskScheduler;
+using Constants = Legacinator.Constants;
 
 namespace UpdaterConfigUpdater
 {

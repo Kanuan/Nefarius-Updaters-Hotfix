@@ -16,19 +16,24 @@ namespace UpdaterConfigUpdater
     {
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("UpdaterPatcherLog.txt")
+                .CreateLogger();
+
            HidHideUpdaterUrlOutdatedOnClicked();
            ViGEmBusUpdaterUrlOutdatedOnClicked();
            BthPS3UpdaterOutdatedOnClicked();
+
+
         }
 
         private static void HidHideUpdaterUrlOutdatedOnClicked()
         {
-            Console.WriteLine("Starting HidHide Updater Configuration Adjustments.");
+            Log.Logger.Information("Starting HidHide Updater Configuration Adjustments.");
             RegistryKey hhRegKey = Registry.LocalMachine.OpenSubKey(Constants.HidHideRegistryPartialKey);
             if (hhRegKey == null)
             {
-                Console.WriteLine("HidHide not installed. Skipping HidHide Updater adjustments");
-                return;
+                Log.Logger.Information("HidHide not installed. Skipping HidHide Updater adjustments"); return;
             }
 
             string installPath = hhRegKey!.GetValue("Path") as string;
@@ -41,30 +46,30 @@ namespace UpdaterConfigUpdater
                     IniData data = parser.ReadFile(updaterIniFilePath, new UTF8Encoding(false));
                     data["General"]["URL"] = Constants.HidHideUpdaterNewUrl;
                     parser.WriteFile(updaterIniFilePath, data, new UTF8Encoding(false));
-                    Console.WriteLine("HidHide Updater configuration adjusted!");
+                    Log.Logger.Information("HidHide Updater configuration adjusted!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine("Failed to adjust HidHide Updater configuration.");
+                    Log.Logger.Error(e, "Failed to adjust HidHide Updater configuration");
+                    //Log.Logger.Information("Failed to adjust HidHide Updater configuration.");
                 }
             }
             else
             {
-                Console.WriteLine("HidHide Updater Configuration file not found on the expected folder.");
+                Log.Logger.Information("HidHide Updater Configuration file not found on the expected folder.");
             }
-            Console.WriteLine("Ending HidHide Updater Configuration Adjustments.");
+            Log.Logger.Information("Ending HidHide Updater Configuration Adjustments.");
         }
 
         private static void ViGEmBusUpdaterUrlOutdatedOnClicked()
         {
-            Console.WriteLine("Starting ViGEmBus Updater Configuration Adjustments.");
+            Log.Logger.Information("Starting ViGEmBus Updater Configuration Adjustments.");
             using RegistryKey view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
                 RegistryView.Registry32);
             RegistryKey hhRegKey = view32.OpenSubKey(Constants.ViGEmBusRegistryPartialKey);
             if (hhRegKey == null)
             {
-                Console.WriteLine("ViGEmBus not installed. Skipping ViGEmBus Updater adjustments");
+                Log.Logger.Information("ViGEmBus not installed. Skipping ViGEmBus Updater adjustments");
                 return;
             }
 
@@ -79,19 +84,18 @@ namespace UpdaterConfigUpdater
                     IniData data = parser.ReadFile(updaterIniFilePath, new UTF8Encoding(false));
                     data["General"]["URL"] = Constants.ViGEmBusUpdaterNewUrl;
                     parser.WriteFile(updaterIniFilePath, data, new UTF8Encoding(false));
-                    Console.WriteLine("ViGEmBus Updater configuration adjusted!");
+                    Log.Logger.Information("ViGEmBus Updater configuration adjusted!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine("Failed to adjust ViGEmBus Updater configuration.");
+                    Log.Logger.Error(e, "Failed to adjust ViGEmBus Updater configuration");
                 }
             }
             else
             {
-                Console.WriteLine("ViGEmBus Updater Configuration file not found on the expected folder.");
+                Log.Logger.Information("ViGEmBus Updater Configuration file not found on the expected folder.");
             }
-            Console.WriteLine("Ending ViGEmBus Updater Configuration Adjustments.");
+            Log.Logger.Information("Ending ViGEmBus Updater Configuration Adjustments.");
             //await Refresh();
         }
 
@@ -101,16 +105,16 @@ namespace UpdaterConfigUpdater
             ProgressDialogController controller =
                 await this.ShowProgressAsync("Please wait...", "Deleting automatic updater");
             */
-            Console.WriteLine("Starting BthPS3 Updater Schedule task and Configuration removal.");
+            Log.Logger.Information("Starting BthPS3 Updater Schedule task and Configuration removal.");
             try
             {
                 TaskService.Instance.RootFolder.DeleteTask(Constants.BthPS3UpdaterScheduledTaskName, true);
-                Console.WriteLine("BthPS3 Updater scheduled task removed successfully!");
+                Log.Logger.Information("BthPS3 Updater scheduled task removed successfully!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                Console.WriteLine("Failed to delete BthPS3 Updater scheduled task or task doesn't exist.");
+                Log.Logger.Error(ex, "Failed to delete BthPS3 Updater scheduled task or task doesn't exist.");
+                //Log.Logger.Information("Failed to delete BthPS3 Updater scheduled task or task doesn't exist.");
 
             }
 
@@ -119,7 +123,7 @@ namespace UpdaterConfigUpdater
             RegistryKey hhRegKey = view32.OpenSubKey(Constants.BthPS3RegistryPartialKey);
             if (hhRegKey == null)
             {
-                Console.WriteLine("BthPS3 not installed. Skipping BthPS3 Updater adjustments");
+                Log.Logger.Information("BthPS3 not installed. Skipping BthPS3 Updater adjustments");
                 return;
             }
 
@@ -130,19 +134,19 @@ namespace UpdaterConfigUpdater
                 try
                 {
                     File.Delete(updaterIniFilePath);
-                    Console.WriteLine("BthPS3 Updater Configuration deleted successfully!");
+                    Log.Logger.Information("BthPS3 Updater Configuration deleted successfully!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine("Failed to delete BthPS3 Updater configuration.");
+                    Log.Logger.Error(e, "Failed to delete BthPS3 Updater configuration.");
+                    //Log.Logger.Information("Failed to delete BthPS3 Updater configuration.");
                 }
             }
             else
             {
-                Console.WriteLine("BthPS3 configuration doesn't exist in the expected folder (has been deleted already or you are using a newer version that doesn't have the Updater.");
+                Log.Logger.Information("BthPS3 configuration doesn't exist in the expected folder (has been deleted already or you are using a newer version that doesn't have the Updater.");
             }
-            Console.WriteLine("Ended BthPS3 Updater Schedule task and Configuration removal.");
+            Log.Logger.Information("Ended BthPS3 Updater Schedule task and Configuration removal.");
         }
 
 

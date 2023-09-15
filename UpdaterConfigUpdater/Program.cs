@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using Legacinator;
-using Serilog;
 using Microsoft.Win32;
 using IniParser;
 using IniParser.Model;
